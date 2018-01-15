@@ -1,5 +1,7 @@
 package com.sparkTutorial.rdd.nasaApacheWebLogs
 
+import org.apache.spark.{SparkConf, SparkContext}
+
 object SameHostsProblem {
 
   def main(args: Array[String]) {
@@ -19,5 +21,20 @@ object SameHostsProblem {
 
        Make sure the head lines are removed in the resulting RDD.
      */
+
+    println("context")
+    val conf = new SparkConf().setAppName("UnionLogProblem").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val nasaHosts1 = sc.textFile("in/nasa_19950701.tsv")
+      .map(line => line.split("\t")(0));
+    val nasaHosts2 = sc.textFile("in/nasa_19950801.tsv")
+      .map(line => line.split("\t")(0));
+
+    val intersection = nasaHosts1.intersection(nasaHosts2)
+      .filter(host => !host.equals("host"))
+      .sortBy(k => k, true, 1);
+
+    intersection.foreach(println(_))
   }
 }

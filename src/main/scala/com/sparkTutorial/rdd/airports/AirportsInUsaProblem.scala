@@ -1,5 +1,9 @@
 package com.sparkTutorial.rdd.airports
 
+import com.sparkTutorial.commons.Utils
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.{SparkConf, SparkContext}
+
 object AirportsInUsaProblem {
   def main(args: Array[String]) {
 
@@ -15,5 +19,18 @@ object AirportsInUsaProblem {
        "Dowagiac Municipal Airport", "Dowagiac"
        ...
      */
+    println("context")
+    val conf = new SparkConf().setAppName("UsaAirports").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val airports = sc.textFile("in/airports.text")
+
+    val usAirports = airports.map(airport => airport.split(Utils.COMMA_DELIMITER))
+      .filter(airport => "\"United States\"".equalsIgnoreCase(airport(3)))
+      .map(airport => s"${airport(1)}, ${airport(2)}")
+
+    usAirports.foreach(println(_))
+
+    usAirports.saveAsTextFile("out/airports_in_usa.text")
   }
 }
