@@ -22,7 +22,7 @@ object AverageHousePriceSolution {
       ).map(tuple => (tuple._1, tuple._2._2 / tuple._2._1))
 
 
-    val sortedHousePriceAvg = priceByNumberOfBedrooms.sortBy(e => e._1.toInt)
+    val sortedHousePriceAvg = priceByNumberOfBedrooms.sortByKey()
 
     println("sortedHousePriceTotal: ")
     for ((bedrooms, avgPrice) <- sortedHousePriceAvg.collect()) println(bedrooms + " : " + avgPrice)
